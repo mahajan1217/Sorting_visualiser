@@ -1,77 +1,111 @@
+async function merge(ele, low, mid, high){
+    const n1 = mid - low + 1;
+    const n2 = high - mid;
+    let left = new Array(n1);
+    let right = new Array(n2);
 
-async function partitionLomuto(ele, l, r){
-    let i = l - 1;
-    // color pivot element
-    ele[r].style.background = 'red';
-    for(let j = l; j <= r - 1; j++){
-        console.log('In partitionLomuto for j');
-        // color current element
-        ele[j].style.background = 'yellow';
-        // pauseChamp
+    for(let i = 0; i < n1; i++){
         await waitforme(delay);
-
-        if(parseInt(ele[j].style.height) < parseInt(ele[r].style.height)){
-            console.log('In partitionLomuto for j if');
+        // color
+        ele[low + i].style.background = 'light red';
+        left[i] = ele[low + i].style.height;
+    }
+    for(let i = 0; i < n2; i++){
+        await waitforme(delay);
+        // color
+        ele[mid + 1 + i].style.background = 'red';
+        right[i] = ele[mid + 1 + i].style.height;
+    }
+    await waitforme(delay);
+    let i = 0, j = 0, k = low;
+    while(i < n1 && j < n2){
+        await waitforme(delay);
+        console.log('In merge while loop');
+        console.log(parseInt(left[i]), parseInt(right[j]));
+        
+        // To add color for which two r being compared for merging
+        
+        if(parseInt(left[i]) <= parseInt(right[j])){
+            console.log('In merge while loop if');
+            // color
+            if((n1 + n2) === ele.length){
+                ele[k].style.background = 'green';
+            }
+            else{
+                ele[k].style.background = 'lightgreen';
+            }
+            
+            ele[k].style.height = left[i];
             i++;
-            swap(ele[i], ele[j]);
-            // color 
-            ele[i].style.background = 'orange';
-            if(i != j) ele[j].style.background = 'orange';
-            // pauseChamp
-            await waitforme(delay);
+            k++;
         }
         else{
-            // color if not less than pivot
-            ele[j].style.background = 'pink';
+            console.log('In merge while loop else');
+            // color
+            if((n1 + n2) === ele.length){
+                ele[k].style.background = 'green';
+            }
+            else{
+                ele[k].style.background = 'lightgreen';
+            } 
+            ele[k].style.height = right[j];
+            j++;
+            k++;
         }
     }
-    i++; 
-    // pauseChamp
-    await waitforme(delay);
-    swap(ele[i], ele[r]); // pivot height one
-    console.log(`i = ${i}`, typeof(i));
-    // color
-    ele[r].style.background = 'pink';
-    ele[i].style.background = 'green';
-
-    // pauseChamp
-    await waitforme(delay);
-    
-    // color
-    for(let k = 0; k < ele.length; k++){
-        if(ele[k].style.background != 'green')
-            ele[k].style.background = 'rgb(12, 92, 241)';
-    }
-
-    return i;
-}
-
-async function quickSort(ele, l, r){
-    console.log('In quickSort()', `l=${l} r=${r}`, typeof(l), typeof(r));
-    if(l < r){
-        let pivot_index = await partitionLomuto(ele, l, r);
-        await quickSort(ele, l, pivot_index - 1);
-        await quickSort(ele, pivot_index + 1, r);
-    }
-    else{
-        if(l >= 0 && r >= 0 && l <ele.length && r <ele.length){
-            ele[r].style.background = 'green';
-            ele[l].style.background = 'green';
+    while(i < n1){
+        await waitforme(delay);
+        console.log("In while if n1 is left");
+        // color
+        if((n1 + n2) === ele.length){
+            ele[k].style.background = 'green';
         }
+        else{
+            ele[k].style.background = 'lightgreen';
+        }
+        ele[k].style.height = left[i];
+        i++;
+        k++;
+    }
+    while(j < n2){
+        await waitforme(delay);
+        console.log("In while if n2 is left");
+        // color
+        if((n1 + n2) === ele.length){
+            ele[k].style.background = 'green';
+        }
+        else{
+            ele[k].style.background = 'lightgreen';
+        }
+        ele[k].style.height = right[j];
+        j++;
+        k++;
     }
 }
 
+async function mergeSort(ele, l, r){
+    console.log('In mergeSort()');
+    if(l >= r){
+        return;
+    }
+    const m = l + Math.floor((r - l) / 2);
+    await mergeSort(ele, l, m);
+    await mergeSort(ele, m + 1, r);
+    await merge(ele, l, m, r);
+}
 
-const quickSortbtn = document.querySelector(".quickSort");
-quickSortbtn.addEventListener('click', async function(){
+const mergeSortbtn = document.querySelector(".mergeSort");
+mergeSortbtn.addEventListener('click', async function(){
     let ele = document.querySelectorAll('.bar');
     let l = 0;
-    let r = ele.length - 1;
+    let r = parseInt(ele.length) - 1;
     disableSortingBtn();
     disableSizeSlider();
     disableNewArrayBtn();
-    await quickSort(ele, l, r);
+    await mergeSort(ele, l, r);
     enableSortingBtn();
     enableSizeSlider();
     enableNewArrayBtn();
 });
+
+
