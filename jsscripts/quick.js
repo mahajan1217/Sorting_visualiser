@@ -22,7 +22,7 @@ async function partitionLomuto(ele, l, r){
         }
         else{
             // color if not less than pivot
-            ele[j].style.background = 'pink';
+            ele[j].style.background = 'rgb(12, 92, 241)';
         }
     }
     i++; 
@@ -31,7 +31,7 @@ async function partitionLomuto(ele, l, r){
     swap(ele[i], ele[r]); // pivot height one
     console.log(`i = ${i}`, typeof(i));
     // color
-    ele[r].style.background = 'pink';
+    ele[r].style.background = 'rgb(12, 92, 241)';
     ele[i].style.background = 'green';
 
     // pauseChamp
